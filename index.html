@@ -1,100 +1,128 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>VegasBett - Bono de Bienvenida</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VegasBett - Bono del 35%</title>
+
+  <!-- Pixel Meta -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '24100361799629508');
+    fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=24100361799629508&ev=PageView&noscript=1"/>
+  </noscript>
+
   <style>
     body {
-      background-color: #1a0d2b;
-      color: white;
+      margin: 0;
       font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #1c0033, #3b0066);
+      color: #fff;
       text-align: center;
-      padding: 40px;
+      padding: 40px 20px;
     }
-    input, button {
-      padding: 12px;
-      font-size: 16px;
-      margin: 10px;
-      border-radius: 8px;
-      border: none;
+    .container {
+      max-width: 500px;
+      margin: auto;
     }
-    input {
-      width: 80%;
+    img.logo {
+      width: 200px;
+      margin-bottom: 30px;
     }
-    button {
-      background-color: #8e44ad;
-      color: white;
-      cursor: pointer;
+    h1 {
+      font-size: 24px;
+      color: #FFD700;
+      margin-bottom: 20px;
     }
-    button:hover {
-      background-color: #732d91;
+    a.btn {
+      display: inline-block;
+      padding: 15px 30px;
+      background-color: #25D366;
+      color: #000;
+      font-size: 18px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 30px;
+      transition: background-color 0.3s;
+      margin: 20px 0;
+    }
+    a.btn:hover {
+      background-color: #1ebe5d;
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 13px;
+      color: #ccc;
     }
   </style>
-</head>
-<body>
-
-  <h1>🎰 VegasBett</h1>
-  <h2>¡Nuevo usuario, nuevo BONO del 35%!</h2>
-  <p>Ingresá tu nombre y accedé a tu bono:</p>
-
-  <input type="text" id="name" placeholder="Tu nombre o 'anónimo'" required>
-  <br>
-  <button onclick="enviarFormulario()">Quiero mi BONO</button>
 
   <script>
-    const PIXEL_ID = '24100361799629508';
-    const ACCESS_TOKEN = 'EAAImHp7VmuwBPDYzXwzGTOkYWQqc0LNmEqBrFLI96dKBlpPYvgZCrZAPvNFJWKj00iDq7ghsT0vZAythFRDlxqYxC8suos3WCB8NaNNoPqGfPq9EMUDmZBALgYjKXHUZBFCTrsJfzVt42WhRmCTqyzuEcGHchu1oKXs745oD3FmB9izXDZAkgnevKexKzBvAZDZD';
-    const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwzd7XWACp7qMQwkEIRrwu6k-rtl8dt2i31zFiG5J3_KN2kMrjX8Wa155JNbocgrPrPjA/exec';
+    function registrarEvento(tipoEvento) {
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbwzd7XWACp7qMQwkEIRrwu6k-rtl8dt2i31zFiG5J3_KN2kMrjX8Wa155JNbocgrPrPjA/exec';
 
-    function enviarFormulario() {
-      const nombre = document.getElementById("name").value.trim() || "anónimo";
+      const data = {
+        evento: tipoEvento,
+        url: window.location.href,
+        id: Math.random().toString(36).substring(2, 12),
+        numero: 'anonimo'
+      };
 
-      // Enviar a Google Sheets
-      fetch(SHEET_ENDPOINT, {
-        method: "POST",
-        body: JSON.stringify({ name: nombre }),
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(response => {
-        if (!response.ok) throw new Error("Error en Sheets");
-        // Enviar a Meta
-        const payload = {
-          data: [{
-            event_name: "Purchase",
-            event_time: Math.floor(Date.now() / 1000),
-            action_source: "website",
-            user_data: {
-              fn: hash(nombre)
-            },
-            custom_data: {
-              currency: "ARS",
-              value: 100
-            }
-          }]
-        };
-
-        return fetch(`https://graph.facebook.com/v18.0/${PIXEL_ID}/events?access_token=${ACCESS_TOKEN}`, {
-          method: "POST",
-          body: JSON.stringify(payload),
-          headers: { "Content-Type": "application/json" }
-        });
-      })
-      .then(() => {
-        alert("✅ ¡Tu bono ha sido activado!");
-        window.location.href = "https://wa.me/5492235931148?text=Hola%2C+quiero+mi+bono+de+VegasBett";
-      })
-      .catch(error => {
-        alert("❌ Error al registrar: " + error.message);
+      fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
       });
     }
-
-    // Función hash (solo para simular datos sin exponer)
-    function hash(input) {
-      return btoa(unescape(encodeURIComponent(input))).substring(0,32);
-    }
   </script>
+</head>
 
+<body>
+  <div class="container">
+    <img src="logo.png" alt="VegasBett" class="logo" />
+    <h1>Obtené tu bono de bienvenida del 35%</h1>
+
+    <a href="https://wa.me/5492235931148?text=Quiero%20mi%20bono" class="btn"
+       onclick='fbq("trackCustom", "ClickFicha"); registrarEvento("ClickFicha");'>
+       Quiero mi bono
+    </a>
+
+    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 12px; text-align: center; max-width: 800px; margin: auto;">
+      <h3 style="color: #333; font-size: 20px; margin-bottom: 8px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" alt="Candado" style="height: 20px; vertical-align: middle; margin-right: 8px;"/>
+        Pagá fácil, seguro y sin complicaciones
+      </h3>
+      <p style="font-size: 14px; color: #555; margin-bottom: 16px;">Somos una empresa verificada, tu carga es 100% segura. Usá tu método favorito sin miedo a estafas.</p>
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+        <img src="./logo visa.jpg" alt="Visa" style="height: 50px;"/>
+        <img src="./logo master.png" alt="Mastercard" style="height: 50px;"/>
+        <img src="./logo mercado pago.png" alt="Mercado Pago" style="height: 50px;"/>
+        <img src="./logo cuenta dni.png" alt="Cuenta DNI" style="height: 50px;"/>
+        <img src="./logo Brubank.png" alt="Brubank" style="height: 50px;"/>
+        <img src="./logo uala.png" alt="Ualá" style="height: 50px;"/>
+      </div>
+      <p style="font-size: 14px; color: #555; margin-top: 20px;">Podés cargar con cualquier tarjeta o billetera virtual.</p>
+    </div>
+
+    <footer>
+      <p>✅ Verificado por WhatsApp</p>
+      <p>© Todos los derechos reservados - Sparkpublicidades</p>
+    </footer>
+  </div>
 </body>
 </html>
+
 
