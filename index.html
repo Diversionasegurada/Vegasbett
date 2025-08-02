@@ -2,63 +2,69 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VegasBett - Bono Bienvenida</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VegasBett - ¡Recibí tu BONO!</title>
   <style>
     body {
-      background: linear-gradient(to bottom right, #5e2a84, #d4af37);
-      font-family: Arial, sans-serif;
-      color: #fff;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #2e004f, #8e2de2);
+      color: white;
       text-align: center;
-      padding: 40px;
+      padding: 40px 20px;
     }
     img {
       max-width: 200px;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
     h1 {
       font-size: 2em;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
-    .boton-bono {
-      background-color: #25D366;
-      color: white;
-      border: none;
-      padding: 15px 30px;
+    p {
       font-size: 18px;
-      border-radius: 8px;
-      cursor: pointer;
+      margin-bottom: 40px;
     }
-    .boton-bono:hover {
-      background-color: #1eb152;
+    .bono-btn {
+      background-color: gold;
+      color: #2e004f;
+      font-size: 20px;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .bono-btn:hover {
+      background-color: #ffd700;
     }
   </style>
 </head>
 <body>
-  <img src="logo.png" alt="VegasBett Logo"/>
-  <h1>¡Bienvenido a VegasBett!</h1>
-  <p>🔥 Usuarios nuevos obtienen un BONO del 35% en su primer carga 🔥</p>
-  <button class="boton-bono" onclick="enviarEvento()">Quiero mi BONO</button>
+
+  <img src="logo.png" alt="VegasBett Logo">
+  <h1>🎁 ¡Obtené tu BONO de Bienvenida!</h1>
+  <p>Usuarios nuevos reciben un 35% extra en su primera carga</p>
+
+  <button class="bono-btn" onclick="enviarEvento()">Quiero mi BONO</button>
 
   <script>
     function enviarEvento() {
-      fetch("https://script.google.com/macros/s/AKfycbz0wv3PnC2Vm6GBKrcb-zoc8u8P3uIgYd8uP4U3ocZ1xm1Gj7kR-olh8jvjXJDMH5SvNQ/exec", {
-        method: "POST",
+      fetch('https://script.google.com/macros/s/AKfycbyp9z1hRwl2wSX-X46-shW5EENXT8vhWQ_jdtjeKpoz2m6eE0XVMlUIWIw5uW9QkMd4NA/exec', {
+        method: 'POST',
+        mode: 'no-cors',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ id: "anonimo" })
+        body: JSON.stringify({ id: 'anonimo' })
       })
-      .then(res => {
-        if (!res.ok) throw new Error("Network response was not ok");
-        alert("¡Evento enviado! Serás redirigido al WhatsApp.");
-        window.open("https://wa.me/5492235429011?text=Hola!%20Quiero%20mi%20BONO%20de%20bienvenida", "_blank");
-      })
-      .catch(err => {
-        alert("Error al enviar: " + err.message);
+      .finally(() => {
+        window.location.href = "https://wa.me/5492235429011?text=Hola%2C%20quiero%20mi%20BONO%20de%20bienvenida";
       });
     }
   </script>
+
 </body>
 </html>
+
