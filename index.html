@@ -1,92 +1,67 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VegasBett - Bono de Bienvenida</title>
+  <meta charset="UTF-8">
+  <title>VegasBett - Bono Bienvenida</title>
   <style>
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #3c0063, #a57ef3);
+      background: linear-gradient(135deg, #2b0c4e, #0e1c3f);
       color: white;
-      text-align: center;
-    }
-    header {
-      padding: 20px;
-    }
-    img {
-      width: 180px;
-      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+      height: 100vh;
+      justify-content: center;
     }
     h1 {
-      font-size: 2em;
+      color: gold;
     }
-    .btn {
-      margin-top: 30px;
-      padding: 15px 30px;
-      font-size: 18px;
-      background-color: #ffd700;
+    input, button {
+      padding: 10px;
+      margin: 10px;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    input {
+      width: 250px;
+    }
+    button {
+      background-color: #ffcc00;
       cursor: pointer;
-      color: #3c0063;
-      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="logo.png" alt="VegasBett Logo"/>
-    <h1>¡Bienvenido a VegasBett!</h1>
-    <p>Los nuevos jugadores obtienen un <strong>35% de BONO</strong> en su primera carga</p>
-    <button class="btn" onclick="registrarEvento()">QUIERO MI BONO</button>
-  </header>
+  <h1>🎰 VegasBett 🎰</h1>
+  <p>Nuevo usuario = ¡35% de BONO en tu primera carga!</p>
+  <form id="bonoForm">
+    <input type="text" id="nombre" placeholder="Tu nombre o alias" required>
+    <button type="submit">Quiero mi bono</button>
+  </form>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbyp9z1hRwl2wSX-X46-shW5EENXT8vhWQ_jdtjeKpoz2m6eE0XVMlUIWIw5uW9QkMd4NA/exec";
-    const PIXEL_ID = "24100361799629508";
-    const ACCESS_TOKEN = "EAAImHp7VmuwBPIhN3HHNyoBxyo2ZAEty0vd7kG9EKIv0oZAgJPoJtAJT46j0t0oeQnvjj9IovlmgaNrRZAzjKSmZArOZAU8FlMDchlsDVfEq6LARTg6LDFUcZAw9NeqThZAxEaa4UJMieIv2jlrip06QFBTu72Cg1sUmmnsHMuuMoQZCSvqDh7yBg2zOybVoQgZDZD";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyp9z1hRwl2wSX-X46-shW5EENXT8vhWQ_jdtjeKpoz2m6eE0XVMlUIWIw5uW9QkMd4NA/exec";
 
-    function registrarEvento() {
-      const payload = {
-        event_name: "Purchase",
-        event_time: Math.floor(Date.now() / 1000),
-        action_source: "website",
-        user_data: {
-          external_id: "anonimo"
-        },
-        custom_data: {
-          currency: "USD",
-          value: 0.43
-        }
-      };
+    document.getElementById("bonoForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const nombre = document.getElementById("nombre").value;
 
-      // Enviar a Meta
-      fetch(`https://graph.facebook.com/v18.0/${PIXEL_ID}/events?access_token=${ACCESS_TOKEN}`, {
+      fetch(scriptURL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ data: [payload] })
-      }).then(() => {
-        // Enviar a Google Sheets
-        fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ id: "anonimo" })
-        }).then(() => {
-          window.location.href = "https://wa.me/5492235429011?text=Hola,%20quiero%20mi%20bono%20de%20bienvenida";
-        }).catch(error => alert("Error al registrar en Sheets: " + error));
-      }).catch(error => alert("Error al registrar evento Meta: " + error));
-    }
+        body: JSON.stringify({ nombre })
+      })
+      .then(res => {
+        if (res.ok) {
+          alert("🎉 Bono registrado correctamente. ¡Ya tenés ventaja!");
+        } else {
+          alert("Error al registrar: " + res.statusText);
+        }
+      })
+      .catch(err => alert("Error al enviar: " + err));
+    });
   </script>
 </body>
 </html>
-
-
-
-
