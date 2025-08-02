@@ -1,117 +1,64 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VegasBett | Bonos Exclusivos</title>
-  <link rel="icon" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VegasBett - Bono Bienvenida</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #2e0854;
+      background: linear-gradient(to bottom right, #5e2a84, #d4af37);
+      font-family: Arial, sans-serif;
       color: #fff;
       text-align: center;
+      padding: 40px;
     }
-
-    header {
-      background-color: #6a0dad;
-      padding: 20px;
+    img {
+      max-width: 200px;
+      margin-bottom: 20px;
     }
-
-    header img {
-      max-height: 80px;
-    }
-
     h1 {
       font-size: 2em;
-      margin-top: 30px;
-      color: #ffd700;
+      margin-bottom: 20px;
     }
-
-    p {
-      font-size: 1.2em;
-      margin: 20px auto;
-      width: 90%;
-      max-width: 500px;
-    }
-
-    .bono-btn {
-      display: inline-block;
-      background: linear-gradient(45deg, #ffd700, #b8860b);
-      color: #2e0854;
-      padding: 15px 30px;
-      font-size: 20px;
-      font-weight: bold;
+    .boton-bono {
+      background-color: #25D366;
+      color: white;
       border: none;
-      border-radius: 10px;
-      text-decoration: none;
-      margin-top: 20px;
-      transition: transform 0.2s ease;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
     }
-
-    .bono-btn:hover {
-      transform: scale(1.05);
-    }
-
-    footer {
-      margin-top: 50px;
-      font-size: 0.9em;
-      color: #ccc;
+    .boton-bono:hover {
+      background-color: #1eb152;
     }
   </style>
-
-  <!-- Meta Pixel Code -->
-  <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(n)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src='https://connect.facebook.net/en_US/fbevents.js';
-    s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script');
-
-    fbq('init', '24100361799629508'); 
-    fbq('track', 'PageView');
-  </script>
-  <noscript>
-    <img height="1" width="1" 
-    src="https://www.facebook.com/tr?id=24100361799629508&ev=PageView&noscript=1"/>
-  </noscript>
-  <!-- End Meta Pixel Code -->
-
 </head>
 <body>
-
-  <header>
-    <img src="logo.png" alt="VegasBett" />
-  </header>
-
-  <main>
-    <h1>🎰 ¡Pedí tu BONO exclusivo ahora! 🎁</h1>
-    <p>Obtené tu bono de bienvenida hoy mismo y empezá a jugar con más chances. Válido por tiempo limitado.</p>
-
-    <a class="bono-btn" href="https://wa.me/5492235429011?text=¡Hola!%20Quiero%20mi%20BONO%20de%20bienvenida%20🎁" onclick="registrarVenta()">Quiero mi BONO</a>
-  </main>
-
-  <footer>
-    © 2025 VegasBett. Todos los derechos reservados.
-  </footer>
+  <img src="logo.png" alt="VegasBett Logo"/>
+  <h1>¡Bienvenido a VegasBett!</h1>
+  <p>🔥 Usuarios nuevos obtienen un BONO del 35% en su primer carga 🔥</p>
+  <button class="boton-bono" onclick="enviarEvento()">Quiero mi BONO</button>
 
   <script>
-    function registrarVenta() {
-      fbq('track', 'Purchase', { value: 0.43, currency: 'USD' });
-
-      fetch("https://script.google.com/macros/s/AKfycbzQTaLb7gI3czAObUN8D37aE52X0R5z9sk1DXT8dUW_DtQCkgTs5AqH7Ec1bljeOefY/exec", {
+    function enviarEvento() {
+      fetch("https://script.google.com/macros/s/AKfycbz0wv3PnC2Vm6GBKrcb-zoc8u8P3uIgYd8uP4U3ocZ1xm1Gj7kR-olh8jvjXJDMH5SvNQ/exec", {
         method: "POST",
-        body: JSON.stringify({ phone: "anónimo" }),
         headers: {
           "Content-Type": "application/json"
-        }
-      }).then(res => res.text()).then(console.log);
+        },
+        body: JSON.stringify({ id: "anonimo" })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        alert("¡Evento enviado! Serás redirigido al WhatsApp.");
+        window.open("https://wa.me/5492235429011?text=Hola!%20Quiero%20mi%20BONO%20de%20bienvenida", "_blank");
+      })
+      .catch(err => {
+        alert("Error al enviar: " + err.message);
+      });
     }
   </script>
-
 </body>
 </html>
