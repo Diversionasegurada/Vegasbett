@@ -1,94 +1,92 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VegasBett - Tu Bono de Bienvenida</title>
+  <title>VegasBett - Bono de Bienvenida</title>
   <style>
     body {
-      background: linear-gradient(135deg, #3a0061, #a97bdc);
+      margin: 0;
       font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #3c0063, #a57ef3);
       color: white;
       text-align: center;
-      margin: 0;
-      padding: 0;
     }
-
     header {
       padding: 20px;
     }
-
     img {
-      max-width: 200px;
+      width: 180px;
+      margin-top: 20px;
     }
-
     h1 {
       font-size: 2em;
-      margin-top: 10px;
     }
-
-    .bono-btn {
-      background-color: gold;
-      color: #3a0061;
-      font-weight: bold;
-      font-size: 20px;
-      border: none;
+    .btn {
+      margin-top: 30px;
       padding: 15px 30px;
+      font-size: 18px;
+      background-color: #ffd700;
+      border: none;
       border-radius: 10px;
       cursor: pointer;
-      margin-top: 30px;
-    }
-
-    .bono-btn:hover {
-      background-color: #ffd700;
+      color: #3c0063;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="logo.png" alt="VegasBett Logo" />
-    <h1>¡Obtené tu bono de bienvenida!</h1>
-    <p>Los nuevos jugadores reciben un 35% de BONO en su primera carga</p>
-    <button class="bono-btn" onclick="registrarConversion()">Quiero mi BONO</button>
+    <img src="logo.png" alt="VegasBett Logo"/>
+    <h1>¡Bienvenido a VegasBett!</h1>
+    <p>Los nuevos jugadores obtienen un <strong>35% de BONO</strong> en su primera carga</p>
+    <button class="btn" onclick="registrarEvento()">QUIERO MI BONO</button>
   </header>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp9z1hRwl2wSX-X46-shW5EENXT8vhWQ_jdtjeKpoz2m6eE0XVMlUIWIw5uW9QkMd4NA/exec";
-    const REDIRECT_URL = "https://wa.me/5492235429011?text=Hola!%20Quiero%20mi%20bono%20de%20bienvenida";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyp9z1hRwl2wSX-X46-shW5EENXT8vhWQ_jdtjeKpoz2m6eE0XVMlUIWIw5uW9QkMd4NA/exec";
+    const PIXEL_ID = "24100361799629508";
+    const ACCESS_TOKEN = "EAAImHp7VmuwBPIhN3HHNyoBxyo2ZAEty0vd7kG9EKIv0oZAgJPoJtAJT46j0t0oeQnvjj9IovlmgaNrRZAzjKSmZArOZAU8FlMDchlsDVfEq6LARTg6LDFUcZAw9NeqThZAxEaa4UJMieIv2jlrip06QFBTu72Cg1sUmmnsHMuuMoQZCSvqDh7yBg2zOybVoQgZDZD";
 
-    function registrarConversion() {
-      fetch(SCRIPT_URL, {
-        method: "POST"
-      })
-      .then(response => response.text())
-      .then(result => {
-        console.log("Respuesta:", result);
-        window.location.href = REDIRECT_URL;
-      })
-      .catch(error => {
-        alert("Error al enviar: " + error);
-      });
+    function registrarEvento() {
+      const payload = {
+        event_name: "Purchase",
+        event_time: Math.floor(Date.now() / 1000),
+        action_source: "website",
+        user_data: {
+          external_id: "anonimo"
+        },
+        custom_data: {
+          currency: "USD",
+          value: 0.43
+        }
+      };
+
+      // Enviar a Meta
+      fetch(`https://graph.facebook.com/v18.0/${PIXEL_ID}/events?access_token=${ACCESS_TOKEN}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ data: [payload] })
+      }).then(() => {
+        // Enviar a Google Sheets
+        fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ id: "anonimo" })
+        }).then(() => {
+          window.location.href = "https://wa.me/5492235429011?text=Hola,%20quiero%20mi%20bono%20de%20bienvenida";
+        }).catch(error => alert("Error al registrar en Sheets: " + error));
+      }).catch(error => alert("Error al registrar evento Meta: " + error));
     }
-
-    // Pixel de Meta
-    !function(f,b,e,v,n,t,s){
-      if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-
-    fbq('init', '24100361799629508');
-    fbq('track', 'PageView');
   </script>
-  <noscript>
-    <img height="1" width="1" style="display:none"
-         src="https://www.facebook.com/tr?id=24100361799629508&ev=PageView&noscript=1"/>
-  </noscript>
 </body>
 </html>
+
 
 
 
