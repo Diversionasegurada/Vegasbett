@@ -103,19 +103,16 @@
     function registrarVenta() {
       fbq('track', 'Purchase', { value: 0.43, currency: 'USD' });
 
-      const telefono = prompt("Ingresá tu número de WhatsApp (sin espacios ni símbolos):");
-
-      if (telefono) {
-        fetch("https://script.google.com/macros/s/AKfycbzQTaLb7gI3czAObUN8D37aE52X0R5z9sk1DXT8dUW_DtQCkgTs5AqH7Ec1bljeOefY/exec", {
-          method: "POST",
-          body: JSON.stringify({ phone: telefono }),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }).then(res => res.text()).then(console.log);
-      }
+      fetch("https://script.google.com/macros/s/AKfycbzQTaLb7gI3czAObUN8D37aE52X0R5z9sk1DXT8dUW_DtQCkgTs5AqH7Ec1bljeOefY/exec", {
+        method: "POST",
+        body: JSON.stringify({ phone: "anónimo" }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(res => res.text()).then(console.log);
     }
   </script>
 
 </body>
 </html>
+
