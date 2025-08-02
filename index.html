@@ -1,70 +1,94 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VegasBett - ¡Recibí tu BONO!</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VegasBett - Tu Bono de Bienvenida</title>
   <style>
     body {
-      margin: 0;
+      background: linear-gradient(135deg, #3a0061, #a97bdc);
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #2e004f, #8e2de2);
       color: white;
       text-align: center;
-      padding: 40px 20px;
+      margin: 0;
+      padding: 0;
     }
+
+    header {
+      padding: 20px;
+    }
+
     img {
       max-width: 200px;
-      margin-bottom: 30px;
     }
+
     h1 {
       font-size: 2em;
-      margin-bottom: 10px;
+      margin-top: 10px;
     }
-    p {
-      font-size: 18px;
-      margin-bottom: 40px;
-    }
+
     .bono-btn {
       background-color: gold;
-      color: #2e004f;
+      color: #3a0061;
+      font-weight: bold;
       font-size: 20px;
-      padding: 15px 30px;
       border: none;
+      padding: 15px 30px;
       border-radius: 10px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      margin-top: 30px;
     }
+
     .bono-btn:hover {
       background-color: #ffd700;
     }
   </style>
 </head>
 <body>
-
-  <img src="logo.png" alt="VegasBett Logo">
-  <h1>🎁 ¡Obtené tu BONO de Bienvenida!</h1>
-  <p>Usuarios nuevos reciben un 35% extra en su primera carga</p>
-
-  <button class="bono-btn" onclick="enviarEvento()">Quiero mi BONO</button>
+  <header>
+    <img src="logo.png" alt="VegasBett Logo" />
+    <h1>¡Obtené tu bono de bienvenida!</h1>
+    <p>Los nuevos jugadores reciben un 35% de BONO en su primera carga</p>
+    <button class="bono-btn" onclick="registrarConversion()">Quiero mi BONO</button>
+  </header>
 
   <script>
-    function enviarEvento() {
-      fetch('https://script.google.com/macros/s/AKfycbyp9z1hRwl2wSX-X46-shW5EENXT8vhWQ_jdtjeKpoz2m6eE0XVMlUIWIw5uW9QkMd4NA/exec', {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ id: 'anonimo' })
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp9z1hRwl2wSX-X46-shW5EENXT8vhWQ_jdtjeKpoz2m6eE0XVMlUIWIw5uW9QkMd4NA/exec";
+    const REDIRECT_URL = "https://wa.me/5492235429011?text=Hola!%20Quiero%20mi%20bono%20de%20bienvenida";
+
+    function registrarConversion() {
+      fetch(SCRIPT_URL, {
+        method: "POST"
       })
-      .finally(() => {
-        window.location.href = "https://wa.me/5492235429011?text=Hola%2C%20quiero%20mi%20BONO%20de%20bienvenida";
+      .then(response => response.text())
+      .then(result => {
+        console.log("Respuesta:", result);
+        window.location.href = REDIRECT_URL;
+      })
+      .catch(error => {
+        alert("Error al enviar: " + error);
       });
     }
-  </script>
 
+    // Pixel de Meta
+    !function(f,b,e,v,n,t,s){
+      if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+
+    fbq('init', '24100361799629508');
+    fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+         src="https://www.facebook.com/tr?id=24100361799629508&ev=PageView&noscript=1"/>
+  </noscript>
 </body>
 </html>
+
+
 
