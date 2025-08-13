@@ -3,124 +3,241 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VegasBett - Bono del 35%</title>
-
-  <!-- Pixel Meta -->
+  <title>VegasBett - Bono del 35% • Cargas fáciles desde $500</title>
+  
+  <!-- Meta Pixel -->
   <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '24100361799629508');
     fbq('track', 'PageView');
   </script>
   <noscript>
-    <img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=24100361799629508&ev=PageView&noscript=1"/>
+    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=24100361799629508&ev=PageView&noscript=1"/>
   </noscript>
 
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #1c0033, #3b0066);
-      color: #fff;
-      text-align: center;
-      padding: 40px 20px;
+    :root{
+      --violet-900:#140022; --violet-700:#2a0150; --violet-600:#3b0066; --violet-500:#5b0ea5;
+      --gold:#FFD700; --gold-2:#F5C542; --text:#eae6f7; --muted:#cfc7df; --ok:#25D366;
+      --card:#1b0a2c; --border:rgba(255,255,255,.1); --shadow: 0 10px 30px rgba(0,0,0,.35);
     }
-    .container {
-      max-width: 500px;
-      margin: auto;
+    *{box-sizing:border-box}
+    html,body{margin:0}
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji';
+      background: radial-gradient(1200px 600px at 50% -100px, var(--violet-600), var(--violet-900)) fixed;
+      color: var(--text);
+      line-height:1.45;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
-    img.logo {
-      width: 200px;
-      margin-bottom: 30px;
+    .container{max-width:1000px;margin:0 auto;padding:24px}
+    .hero{position:relative;overflow:hidden;border-radius:24px;background:
+      linear-gradient(135deg, rgba(91,14,165,.35), rgba(20,0,34,.6)), url('cover.jpg') center/cover no-repeat;
+      box-shadow: var(--shadow);
     }
-    h1 {
-      font-size: 24px;
-      color: #FFD700;
-      margin-bottom: 20px;
-    }
-    a.btn {
-      display: inline-block;
-      padding: 15px 30px;
-      background-color: #25D366;
-      color: #000;
-      font-size: 18px;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 30px;
-      transition: background-color 0.3s;
-      margin: 20px 0;
-    }
-    a.btn:hover {
-      background-color: #1ebe5d;
-    }
-    footer {
-      margin-top: 40px;
-      font-size: 13px;
-      color: #ccc;
-    }
+    .hero-inner{padding:42px 24px 28px;backdrop-filter: blur(1px)}
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{width:56px;height:56px;object-fit:contain;filter: drop-shadow(0 6px 18px rgba(0,0,0,.35))}
+    .title{margin:8px 0 6px;font-size:28px;color:var(--gold)}
+    .subtitle{margin:0;color:var(--muted);font-size:15px}
+
+    .pillbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .pill{font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.04)}
+
+    .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+    .cta .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 18px;border-radius:16px;text-decoration:none;font-weight:700}
+    .btn-primary{background:var(--ok);color:#000;box-shadow:0 6px 18px rgba(37,211,102,.35)}
+    .btn-outline{border:1px solid var(--border);color:var(--text)}
+
+    .grid{display:grid;gap:18px;margin-top:22px}
+    @media(min-width:880px){.grid{grid-template-columns:1.15fr .85fr}}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--border);border-radius:20px;box-shadow: var(--shadow)}
+    .card h3{margin:0 0 8px;font-size:18px;color:#fff}
+    .card p{margin:0 0 8px;color:var(--muted)}
+
+    .steps{display:grid;gap:12px}
+    .step{display:flex;gap:12px;padding:14px;border-radius:14px;background:rgba(255,255,255,.03);border:1px dashed var(--border)}
+    .badge{min-width:28px;height:28px;border-radius:50%;background:var(--gold);color:#000;display:flex;align-items:center;justify-content:center;font-weight:800}
+
+    .payments{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+    .payments img{height:38px;filter: drop-shadow(0 4px 10px rgba(0,0,0,.35));background:#fff;border-radius:8px;padding:4px}
+
+    .hl{color:var(--gold)}
+
+    details{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;padding:10px 14px}
+    details+details{margin-top:10px}
+    summary{cursor:pointer;font-weight:700;color:#fff}
+    summary::-webkit-details-marker{display:none}
+
+    .trust{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .trust li{list-style:none;padding:12px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.03)}
+
+    .foot{opacity:.8;font-size:13px;margin-top:24px;text-align:center}
+
+    /* Sticky mobile bar */
+    .sticky{position:sticky;bottom:0;backdrop-filter: blur(8px);background:linear-gradient(0deg, rgba(20,0,34,.85), rgba(20,0,34,.65));padding:10px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:space-between;align-items:center;border-radius:0 0 20px 20px}
+    .sticky strong{color:var(--gold)}
+
+    /* Tiny form */
+    .mini-form{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+    .mini-form input{flex:1;min-width:180px;background:#12041e;border:1px solid var(--border);border-radius:12px;color:#fff;padding:10px}
+    .mini-form button{background:transparent;border:1px solid var(--border);color:#fff;border-radius:12px;padding:10px 12px;cursor:pointer}
+
+    .ribbon{position:absolute;top:12px;right:-16px;transform:rotate(10deg);background:linear-gradient(90deg, var(--gold), var(--gold-2));color:#000;padding:8px 16px;border-radius:14px;box-shadow: var(--shadow);font-weight:800}
   </style>
 
   <script>
-    function registrarEvento(tipoEvento) {
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbwzd7XWACp7qMQwkEIRrwu6k-rtl8dt2i31zFiG5J3_KN2kMrjX8Wa155JNbocgrPrPjA/exec';
+    // Config rápida para elegir evento de Meta (Contact o Purchase)
+    const META_EVENT = 'Contact'; // Cambiar a 'Purchase' si querés medir compra
 
-      const data = {
+    function registrarEvento(tipoEvento, extra={}){
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbwzd7XWACp7qMQwkEIRrwu6k-rtl8dt2i31zFiG5J3_KN2kMrjX8Wa155JNbocgrPrPjA/exec';
+      const payload = {
         evento: tipoEvento,
         url: window.location.href,
-        id: Math.random().toString(36).substring(2, 12),
-        numero: 'anonimo'
+        id: Math.random().toString(36).slice(2,10),
+        numero: 'anonimo',
+        ...extra
       };
+      try{ fetch(scriptURL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});}catch(e){}
+    }
 
-      fetch(scriptURL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
+    function goWhatsApp(){
+      const nombre = (document.querySelector('#nombre')?.value||'').trim();
+      const msg = encodeURIComponent(nombre ? `Hola, soy ${nombre}. Quiero mi bono de bienvenida del 35%` : 'Quiero mi bono de bienvenida del 35%');
+      // Meta Pixel
+      fbq('track', META_EVENT, {value: 0.43, currency: 'USD'});
+      // Apps Script (guardamos también el nombre si lo completó)
+      registrarEvento(META_EVENT, nombre? {nombre}: {});
+      // WhatsApp
+      window.location.href = `https://wa.me/5492235429011?text=${msg}`;
     }
   </script>
 </head>
 
 <body>
   <div class="container">
-    <img src="logo.png" alt="VegasBett" class="logo" />
-    <h1>Obtené tu bono de bienvenida del 35%</h1>
 
-    <a href="https://wa.me/5492235429011?text=Quiero%20mi%20bono" class="btn"
-       onclick='fbq("track", "Purchase", {value: 0.43, currency: "USD"}); registrarEvento("Purchase");'>
-       Quiero mi bono
-    </a>
+    <section class="hero card">
+      <div class="ribbon">Bono +35% automático</div>
+      <div class="hero-inner">
+        <div class="brand">
+          <img src="logo.png" alt="VegasBett" class="logo"/>
+          <div>
+            <h1 class="title">VegasBett</h1>
+            <p class="subtitle">Cargas fáciles desde <span class="hl">$500</span> • Retiros sin vueltas • Atención por WhatsApp</p>
+          </div>
+        </div>
 
-    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 12px; text-align: center; max-width: 800px; margin: auto;">
-      <h3 style="color: #333; font-size: 20px; margin-bottom: 8px;">
-        <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" alt="Candado" style="height: 20px; vertical-align: middle; margin-right: 8px;"/>
-        Pagá fácil, seguro y sin complicaciones
-      </h3>
-      <p style="font-size: 14px; color: #555; margin-bottom: 16px;">Somos una empresa verificada, tu carga es 100% segura. Usá tu método favorito sin miedo a estafas.</p>
-      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
-        <img src="./logo visa.jpg" alt="Visa" style="height: 50px;"/>
-        <img src="./logo master.png" alt="Mastercard" style="height: 50px;"/>
-        <img src="./logo mercado pago.png" alt="Mercado Pago" style="height: 50px;"/>
-        <img src="./logo cuenta dni.png" alt="Cuenta DNI" style="height: 50px;"/>
-        <img src="./logo Brubank.png" alt="Brubank" style="height: 50px;"/>
-        <img src="./logo uala.png" alt="Ualá" style="height: 50px;"/>
+        <div class="pillbar">
+          <span class="pill">✅ Empresa verificada</span>
+          <span class="pill">🔒 Pagos 100% seguros</span>
+          <span class="pill">⚡ Acreditación rápida</span>
+          <span class="pill">🎁 Bono +35% en tu primer carga</span>
+        </div>
+
+        <div class="cta">
+          <a class="btn btn-primary" href="javascript:void(0)" onclick="goWhatsApp()">🚀 Quiero mi bono</a>
+          <a class="btn btn-outline" href="#como-cargar">¿Cómo cargo?</a>
+        </div>
+
+        <div class="mini-form">
+          <input id="nombre" type="text" placeholder="Tu nombre (opcional)"/>
+          <button type="button" onclick="goWhatsApp()">Continuar por WhatsApp</button>
+        </div>
       </div>
-      <p style="font-size: 14px; color: #555; margin-top: 20px;">Podés cargar con cualquier tarjeta o billetera virtual.</p>
-    </div>
+      
+      <div class="sticky">
+        <div>Desde <strong>$500</strong> • Bono <strong>+35%</strong></div>
+        <a class="btn btn-primary" href="javascript:void(0)" onclick="goWhatsApp()">Pedir carga</a>
+      </div>
+    </section>
 
-    <footer>
-      <p>✅ Verificado por WhatsApp</p>
-      <p>© Todos los derechos reservados - Sparkpublicidades</p>
+    <section id="como-cargar" class="grid">
+      <article class="card" style="padding:18px 16px">
+        <h3>¿Cómo hacer tu primera carga?</h3>
+        <p>Es muy simple y todo por WhatsApp. Te guiamos en minutos:</p>
+        <div class="steps">
+          <div class="step"><div class="badge">1</div><div>
+            <strong>Escribinos por WhatsApp</strong>
+            <p>Decinos el monto que querés cargar (desde <span class="hl">$500</span>). Te pasamos los datos.</p>
+          </div></div>
+          <div class="step"><div class="badge">2</div><div>
+            <strong>Pagás con tu método favorito</strong>
+            <p>Tarjeta o billetera virtual. En cuanto confirmás, registramos tu carga.</p>
+          </div></div>
+          <div class="step"><div class="badge">3</div><div>
+            <strong>Recibís <span class="hl">tu carga + 35%</span> automáticamente</strong>
+            <p>El bono de bienvenida aplica en la primera carga al instante. ¡Listo para jugar!</p>
+          </div></div>
+        </div>
+        <div style="margin-top:10px">
+          <a class="btn btn-primary" href="javascript:void(0)" onclick="goWhatsApp()">Quiero cargar ahora</a>
+        </div>
+      </article>
+
+      <aside class="card" style="padding:18px 16px">
+        <h3>Métodos de pago</h3>
+        <p>Aceptamos tarjetas y billeteras más usadas en Argentina.</p>
+        <div class="payments" aria-label="Medios de pago disponibles">
+          <img src="./logo visa.jpg" alt="Visa"/>
+          <img src="./logo master.png" alt="Mastercard"/>
+          <img src="./logo mercado pago.png" alt="Mercado Pago"/>
+          <img src="./logo cuenta dni.png" alt="Cuenta DNI"/>
+          <img src="./logo Brubank.png" alt="Brubank"/>
+          <img src="./logo uala.png" alt="Ualá"/>
+        </div>
+        <ul class="trust" style="margin:14px 0 0;padding:0">
+          <li>✅ Empresa verificada por WhatsApp</li>
+          <li>🔒 Seguridad y respaldo en cada operación</li>
+          <li>⚡ Acreditación ágil</li>
+          <li>🕘 Soporte todos los días</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="grid" style="margin-top:14px">
+      <article class="card" style="padding:18px 16px">
+        <h3>Retiros sin vueltas</h3>
+        <p>Cuando quieras retirar, lo pedís por WhatsApp y te indicamos el paso a paso. Sin trabas, sin letra chica.
+        </p>
+        <ul style="margin:10px 0 0 18px; color:var(--muted)">
+          <li>Retiros ágiles con verificación simple.</li>
+          <li>Horarios amplios de atención.</li>
+          <li>Transparencia total en cada movimiento.</li>
+        </ul>
+      </article>
+
+      <aside class="card" style="padding:18px 16px">
+        <h3>Preguntas frecuentes</h3>
+        <details>
+          <summary>¿El bono de +35% es automático?</summary>
+          <p>Sí. En tu primera carga se acredita junto con el monto depositado. No tenés que hacer nada extra.</p>
+        </details>
+        <details>
+          <summary>¿Cuál es el mínimo de carga?</summary>
+          <p>Desde <strong>$500</strong>. Ideal para probar el servicio con poco riesgo.</p>
+        </details>
+        <details>
+          <summary>¿Qué métodos de pago aceptan?</summary>
+          <p>Tarjetas y billeteras principales: Visa, Mastercard, Mercado Pago, Cuenta DNI, Brubank, Ualá, entre otros.</p>
+        </details>
+        <details>
+          <summary>¿Cómo pido mi retiro?</summary>
+          <p>Lo solicitás por WhatsApp. Verificamos y procesamos sin vueltas.</p>
+        </details>
+      </aside>
+    </section>
+
+    <footer class="foot">
+      <p>© Todos los derechos reservados – VegasBett</p>
+      <p>🛡️ Sitio seguro • 📞 Atención por WhatsApp</p>
     </footer>
+
   </div>
 </body>
 </html>
