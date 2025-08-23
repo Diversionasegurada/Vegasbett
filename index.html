@@ -90,51 +90,57 @@
     .ribbon{position:absolute;top:12px;right:-16px;transform:rotate(10deg);background:linear-gradient(90deg, var(--gold), var(--gold-2));color:#000;padding:8px 16px;border-radius:14px;box-shadow: var(--shadow);font-weight:800}
   </style>
 
- <script>
-  // --- Config ---
-  const META_EVENT = 'Contact';
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzd7XWACp7qMQwkEIRrwu6k-rtl8dt2i31zFiG5J3_KN2kMrjX8Wa155JNbocgrPrPjA/exec';
+  <script>
+    // --- Config ---
+    const META_EVENT = 'Contact';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyhNGqBJGfB3YAW_j0ky4DS_513H3kgvb-qSAADNoLUwW-zeZoyywpVQGzzpb8kLkwE2A/exec';
 
-  // --- Logger a Google Sheets (Apps Script) ---
-  function registrarEvento(tipoEvento, extra = {}) {
-    const payload = {
-      evento: tipoEvento,
-      url: window.location.href,
-      id: Math.random().toString(36).slice(2,10),
-      numero: 'anonimo',
-      ...extra
-    };
-    try {
-      fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    } catch(e) { /* silencioso */ }
-  }
+    // Lee cookies _fbp y _fbc para mejorar el matching en CAPI
+    function getCookie(n){
+      return (`; ${document.cookie}`).split(`; ${n}=`).pop().split(';')[0] || undefined;
+    }
 
-  // --- Click a WhatsApp + Pixel (sin value) ---
-  function goWhatsApp(){
-    const nombre = (document.querySelector('#nombre')?.value || '').trim();
+    // --- Logger a Apps Script (CAPI + opcional Sheets) ---
+    function registrarEvento(tipoEvento, extra = {}) {
+      const payload = {
+        evento: tipoEvento,
+        url: location.href,
+        id: Math.random().toString(36).slice(2,10),
+        fbp: getCookie('_fbp'),
+        fbc: getCookie('_fbc'),
+        ...extra
+      };
+      try {
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch(e) { /* silencioso */ }
+    }
 
-    // event_id para deduplicación futura con CAPI
-    const eid = 'ctc_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+    // --- Click a WhatsApp + Pixel (Contact sin value) ---
+    function goWhatsApp(){
+      const nombre = (document.querySelector('#nombre')?.value || '').trim();
 
-    // Pixel: Contact SIN value
-    fbq('track', META_EVENT, { event_id: eid });
+      // event_id para deduplicación futura con CAPI
+      const eid = 'ctc_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
 
-    // Sheets: guardamos click + event_id (+ nombre si existe)
-    registrarEvento(META_EVENT, { event_id: eid, ...(nombre ? { nombre } : {}) });
+      // Pixel: Contact SIN value ni currency
+      fbq('track', META_EVENT, { event_id: eid });
 
-    // WhatsApp
-    const msg = encodeURIComponent(
-      nombre ? `Hola, soy ${nombre}. Quiero mi bono de bienvenida del 35%`
-             : 'Quiero mi bono de bienvenida del 35%'
-    );
-    window.location.href = `https://wa.me/5492235029643?text=${msg}`;
-  }
-</script>
+      // Backend: guardamos click + event_id (+ nombre si existe)
+      registrarEvento(META_EVENT, { event_id: eid, ...(nombre ? { nombre } : {}) });
+
+      // WhatsApp
+      const msg = encodeURIComponent(
+        nombre ? `Hola, soy ${nombre}. Quiero mi bono de bienvenida del 35%`
+               : 'Quiero mi bono de bienvenida del 35%'
+      );
+      window.location.href = `https://wa.me/5492235029643?text=${msg}`;
+    }
+  </script>
 </head>
 
 <body>
