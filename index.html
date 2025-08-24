@@ -44,14 +44,10 @@
     .logo{width:56px;height:56px;object-fit:contain;filter: drop-shadow(0 6px 18px rgba(0,0,0,.35))}
     .title{margin:8px 0 6px;font-size:28px;color:var(--gold)}
     .subtitle{margin:0;color:var(--muted);font-size:15px}
+    .subtitle b{color:#fff}
 
     .pillbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
     .pill{font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.04)}
-
-    .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
-    .cta .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 18px;border-radius:16px;text-decoration:none;font-weight:700}
-    .btn-primary{background:var(--ok);color:#000;box-shadow:0 6px 18px rgba(37,211,102,.35)}
-    .btn-outline{border:1px solid var(--border);color:var(--text)}
 
     .grid{display:grid;gap:18px;margin-top:22px}
     @media(min-width:880px){.grid{grid-template-columns:1.15fr .85fr}}
@@ -78,15 +74,12 @@
 
     .foot{opacity:.8;font-size:13px;margin-top:24px;text-align:center}
 
-    /* Sticky mobile bar */
+    /* Sticky mobile bar - único botón */
     .sticky{position:sticky;bottom:0;backdrop-filter: blur(8px);background:linear-gradient(0deg, rgba(20,0,34,.85), rgba(20,0,34,.65));padding:10px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:space-between;align-items:center;border-radius:0 0 20px 20px}
     .sticky strong{color:var(--gold)}
+    .sticky .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 18px;border-radius:16px;text-decoration:none;font-weight:700;background:var(--ok);color:#000;box-shadow:0 6px 18px rgba(37,211,102,.35)}
 
-    /* Tiny form */
-    .mini-form{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-    .mini-form input{flex:1;min-width:180px;background:#12041e;border:1px solid var(--border);border-radius:12px;color:#fff;padding:10px}
-    .mini-form button{background:transparent;border:1px solid var(--border);color:#fff;border-radius:12px;padding:10px 12px;cursor:pointer}
-
+    .legal-note{margin-top:10px;font-size:12px;color:var(--muted)}
     .ribbon{position:absolute;top:12px;right:-16px;transform:rotate(10deg);background:linear-gradient(90deg, var(--gold), var(--gold-2));color:#000;padding:8px 16px;border-radius:14px;box-shadow: var(--shadow);font-weight:800}
   </style>
 
@@ -95,50 +88,45 @@
     const META_EVENT = 'Contact';
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyeS7irovX2Kehi_vfS-eKvkc34Pe45zF85ECxdlAcvPyQQLUOgi8sbpB7UC-YPdniPIg/exec';
 
-    // Lee cookies _fbp y _fbc para mejorar el matching en CAPI
+    // Cookies _fbp y _fbc para matching en CAPI
     function getCookie(n){
       return (`; ${document.cookie}`).split(`; ${n}=`).pop().split(';')[0] || undefined;
     }
 
-    // --- Logger a Apps Script (CAPI + opcional Sheets) ---
-    function registrarEvento(tipoEvento, extra = {}) {
-      const payload = {
-        evento: tipoEvento,
-        url: location.href,
-        id: Math.random().toString(36).slice(2,10),
-        fbp: getCookie('_fbp'),
-        fbc: getCookie('_fbc'),
-        ...extra
-      };
-      try {
-        fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-      } catch(e) { /* silencioso */ }
+    // --- Dedupe por sesión de pestaña ---
+    function getOrCreateSessionEID(){
+      let eid = sessionStorage.getItem('contact_eid');
+      if(!eid){
+        eid = 'ctc_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+        sessionStorage.setItem('contact_eid', eid);
+      }
+      return eid;
+    }
+    function alreadySentThisSession(){
+      return sessionStorage.getItem('contact_sent') === '1';
+    }
+    function markSent(){
+      sessionStorage.setItem('contact_sent', '1');
+      sessionStorage.setItem('contact_ts', String(Date.now()));
     }
 
-    // --- Click a WhatsApp + Pixel (Contact sin value) ---
-    // Guardas anti-duplicado: 1 contacto por sesión cada 15s
-    let CONTACT_LOCK = false;
+    // Throttle adicional (15s)
     let LAST_CONTACT_TS = 0;
 
-    function goWhatsApp(){
+    function sendContact(){
+      // Doble barrera: 1) 1 envío por sesión, 2) throttle
+      if (alreadySentThisSession()) return false;
       const now = Date.now();
-      if (CONTACT_LOCK || (now - LAST_CONTACT_TS) < 15000) {
-        return; // evita doble click/duplex
-      }
-      CONTACT_LOCK = true; LAST_CONTACT_TS = now;
+      if ((now - LAST_CONTACT_TS) < 15000) return false;
+      LAST_CONTACT_TS = now;
 
       const nombre = (document.querySelector('#nombre')?.value || '').trim();
-      const eid = 'ctc_' + now + '_' + Math.random().toString(36).slice(2,8);
+      const eid = getOrCreateSessionEID(); // MISMO event_id para toda la sesión
 
-      // 1) Pixel: Contact SIN value/currency
+      // 1) Pixel
       try { fbq('track', META_EVENT, { event_id: eid }); } catch(e) {}
 
-      // 2) Backend: usar sendBeacon (con fallback fetch keepalive)
+      // 2) Backend (CAPI/Sheets)
       const payload = {
         evento: META_EVENT,
         url: location.href,
@@ -148,6 +136,7 @@
         event_id: eid,
         ...(nombre ? { nombre } : {})
       };
+
       const data = new Blob([JSON.stringify(payload)], { type: 'application/json' });
       let sent = false;
       if (navigator.sendBeacon) {
@@ -165,20 +154,38 @@
         } catch(e) {}
       }
 
-      // 3) Redirección con pequeño delay y bloqueo visual para evitar reclics
-      const ctas = document.querySelectorAll('[onclick*="goWhatsApp"]');
-      ctas.forEach(el => { el.setAttribute('aria-disabled','true'); el.style.pointerEvents='none'; el.style.opacity='.7'; });
+      // 3) Marcar enviado en esta sesión para dedupe fuerte
+      markSent();
 
+      // 4) Deshabilitar CTAs visibles (por si a futuro agregás otro)
+      document.querySelectorAll('.js-cta').forEach(el => {
+        el.setAttribute('aria-disabled','true');
+        el.style.pointerEvents = 'none';
+        el.style.opacity = '.7';
+      });
+
+      // 5) Redirección a WhatsApp
       const msg = encodeURIComponent(
         nombre ? `Hola, soy ${nombre}. Quiero mi bono de bienvenida del 35%`
                : 'Quiero mi bono de bienvenida del 35%'
       );
       setTimeout(() => {
         window.location.href = `https://wa.me/5492235029643?text=${msg}`;
-        // liberamos el lock luego de navegar por si el usuario vuelve atrás
-        setTimeout(() => { CONTACT_LOCK = false; }, 3000);
       }, 300);
+
+      return true;
     }
+
+    // Binder: cualquier botón con .js-cta dispara el flujo (acá tenemos 1)
+    function bindCTAs(){
+      document.querySelectorAll('.js-cta').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          sendContact();
+        }, { passive:false });
+      });
+    }
+    document.addEventListener('DOMContentLoaded', bindCTAs);
   </script>
 </head>
 
@@ -186,37 +193,31 @@
   <div class="container">
 
     <section class="hero card">
-      <div class="ribbon">Bono +35% automático</div>
+      <div class="ribbon">Bono +35% en tu primera carga</div>
       <div class="hero-inner">
         <div class="brand">
           <img src="logo.png" alt="VegasBett" class="logo"/>
           <div>
             <h1 class="title">VegasBett</h1>
-            <p class="subtitle">Cargas fáciles desde <span class="hl">$500</span> • Retiros sin vueltas • Atención por WhatsApp</p>
+            <p class="subtitle">
+              Cargas desde <span class="hl">$500</span> • Retiros sin vueltas • Atención por WhatsApp<br>
+              <b>Bono +35% exclusivo en la <u>primera</u> carga</b>
+            </p>
           </div>
         </div>
 
-        <div class="pillbar">
+        <div class="pillbar" aria-label="Ventajas">
           <span class="pill">✅ Empresa verificada</span>
           <span class="pill">🔒 Pagos 100% seguros</span>
           <span class="pill">⚡ Acreditación rápida</span>
-          <span class="pill">🎁 Bono +35% en tu primer carga</span>
-        </div>
-
-        <div class="cta">
-          <a class="btn btn-primary" href="javascript:void(0)" onclick="goWhatsApp()">🚀 Quiero mi bono</a>
-          <a class="btn btn-outline" href="#como-cargar">¿Cómo cargo?</a>
-        </div>
-
-        <div class="mini-form">
-          <input id="nombre" type="text" placeholder="Tu nombre (opcional)"/>
-          <button type="button" onclick="goWhatsApp()">Continuar por WhatsApp</button>
+          <span class="pill">🎁 Bono +35% 1ra carga</span>
         </div>
       </div>
-      
-      <div class="sticky">
-        <div>Desde <strong>$500</strong> • Bono <strong>+35%</strong></div>
-        <a class="btn btn-primary" href="javascript:void(0)" onclick="goWhatsApp()">Pedir carga</a>
+
+      <!-- Barra fija: ÚNICO BOTÓN DE CONTACTO -->
+      <div class="sticky" role="region" aria-label="Acción principal">
+        <div>Desde <strong>$500</strong> • Bono <strong>+35%</strong> 1ra carga</div>
+        <a class="btn js-cta" href="#">🚀 Pedir carga por WhatsApp</a>
       </div>
     </section>
 
@@ -234,13 +235,11 @@
             <p>Tarjeta o billetera virtual. En cuanto confirmás, registramos tu carga.</p>
           </div></div>
           <div class="step"><div class="badge">3</div><div>
-            <strong>Recibís <span class="hl">tu carga + 35%</span> automáticamente</strong>
-            <p>El bono de bienvenida aplica en la primera carga al instante. ¡Listo para jugar!</p>
+            <strong>Recibís <span class="hl">tu carga + 35%</span></strong>
+            <p><b>El bono aplica solo en la primera carga</b> y se acredita al instante. ¡Listo para jugar!</p>
           </div></div>
         </div>
-        <div style="margin-top:10px">
-          <a class="btn btn-primary" href="javascript:void(0)" onclick="goWhatsApp()">Quiero cargar ahora</a>
-        </div>
+        <p class="legal-note">*Promoción válida una sola vez por usuario. Sujeto a verificación de cuenta.</p>
       </article>
 
       <aside class="card" style="padding:18px 16px">
@@ -266,8 +265,7 @@
     <section class="grid" style="margin-top:14px">
       <article class="card" style="padding:18px 16px">
         <h3>Retiros sin vueltas</h3>
-        <p>Cuando quieras retirar, lo pedís por WhatsApp y te indicamos el paso a paso. Sin trabas, sin letra chica.
-        </p>
+        <p>Cuando quieras retirar, lo pedís por WhatsApp y te indicamos el paso a paso. Sin trabas, sin letra chica.</p>
         <ul style="margin:10px 0 0 18px; color:var(--muted)">
           <li>Retiros ágiles con verificación simple.</li>
           <li>Horarios amplios de atención.</li>
@@ -279,7 +277,7 @@
         <h3>Preguntas frecuentes</h3>
         <details>
           <summary>¿El bono de +35% es automático?</summary>
-          <p>Sí. En tu primera carga se acredita junto con el monto depositado. No tenés que hacer nada extra.</p>
+          <p>Sí. <b>Se acredita en la primera carga</b> junto con el monto depositado.</p>
         </details>
         <details>
           <summary>¿Cuál es el mínimo de carga?</summary>
@@ -299,6 +297,10 @@
     <footer class="foot">
       <p>© Todos los derechos reservados – VegasBett</p>
       <p>🛡️ Sitio seguro • 📞 Atención por WhatsApp</p>
+      <p style="margin-top:6px">
+        Operamos sobre la plataforma 
+        <a href="https://ganamos.io" target="_blank" rel="noopener noreferrer" style="color:var(--gold);font-weight:700">ganamos.io</a>
+      </p>
     </footer>
 
   </div>
