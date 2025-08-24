@@ -93,7 +93,7 @@
   <script>
     // --- Config ---
     const META_EVENT = 'Contact';
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyhNGqBJGfB3YAW_j0ky4DS_513H3kgvb-qSAADNoLUwW-zeZoyywpVQGzzpb8kLkwE2A/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyeS7irovX2Kehi_vfS-eKvkc34Pe45zF85ECxdlAcvPyQQLUOgi8sbpB7UC-YPdniPIg/exec';
 
     // Lee cookies _fbp y _fbc para mejorar el matching en CAPI
     function getCookie(n){
@@ -121,24 +121,63 @@
     }
 
     // --- Click a WhatsApp + Pixel (Contact sin value) ---
+    // Guardas anti-duplicado: 1 contacto por sesión cada 15s
+    let CONTACT_LOCK = false;
+    let LAST_CONTACT_TS = 0;
+
     function goWhatsApp(){
+      const now = Date.now();
+      if (CONTACT_LOCK || (now - LAST_CONTACT_TS) < 15000) {
+        return; // evita doble click/duplex
+      }
+      CONTACT_LOCK = true; LAST_CONTACT_TS = now;
+
       const nombre = (document.querySelector('#nombre')?.value || '').trim();
+      const eid = 'ctc_' + now + '_' + Math.random().toString(36).slice(2,8);
 
-      // event_id para deduplicación futura con CAPI
-      const eid = 'ctc_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+      // 1) Pixel: Contact SIN value/currency
+      try { fbq('track', META_EVENT, { event_id: eid }); } catch(e) {}
 
-      // Pixel: Contact SIN value ni currency
-      fbq('track', META_EVENT, { event_id: eid });
+      // 2) Backend: usar sendBeacon (con fallback fetch keepalive)
+      const payload = {
+        evento: META_EVENT,
+        url: location.href,
+        id: Math.random().toString(36).slice(2,10),
+        fbp: getCookie('_fbp'),
+        fbc: getCookie('_fbc'),
+        event_id: eid,
+        ...(nombre ? { nombre } : {})
+      };
+      const data = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+      let sent = false;
+      if (navigator.sendBeacon) {
+        sent = navigator.sendBeacon(APPS_SCRIPT_URL, data);
+      }
+      if (!sent) {
+        try {
+          fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'application/json' },
+            keepalive: true,
+            mode: 'no-cors'
+          });
+        } catch(e) {}
+      }
 
-      // Backend: guardamos click + event_id (+ nombre si existe)
-      registrarEvento(META_EVENT, { event_id: eid, ...(nombre ? { nombre } : {}) });
+      // 3) Redirección con pequeño delay y bloqueo visual para evitar reclics
+      const ctas = document.querySelectorAll('[onclick*="goWhatsApp"]');
+      ctas.forEach(el => { el.setAttribute('aria-disabled','true'); el.style.pointerEvents='none'; el.style.opacity='.7'; });
 
-      // WhatsApp
       const msg = encodeURIComponent(
         nombre ? `Hola, soy ${nombre}. Quiero mi bono de bienvenida del 35%`
                : 'Quiero mi bono de bienvenida del 35%'
       );
-      window.location.href = `https://wa.me/5492235029643?text=${msg}`;
+      setTimeout(() => {
+        window.location.href = `https://wa.me/5492235029643?text=${msg}`;
+        // liberamos el lock luego de navegar por si el usuario vuelve atrás
+        setTimeout(() => { CONTACT_LOCK = false; }, 3000);
+      }, 300);
     }
   </script>
 </head>
@@ -265,5 +304,3 @@
   </div>
 </body>
 </html>
-
-
