@@ -124,7 +124,14 @@
       const eid = getOrCreateSessionEID(); // MISMO event_id para toda la sesión
 
       // 1) Pixel
-      try { fbq('track', META_EVENT, { event_id: eid }); } catch(e) {}
+      try {
+        fbq('track', META_EVENT, {
+          event_id: eid,
+          value: 100,       // <- valor fijo para el evento
+          currency: 'ARS'   // <- código ISO de 3 letras
+       });
+      } catch(e) {}
+
 
       // 2) Backend (CAPI/Sheets)
       const payload = {
@@ -134,6 +141,8 @@
         fbp: getCookie('_fbp'),
         fbc: getCookie('_fbc'),
         event_id: eid,
+        value: 100,        // <- añadido
+        currency: 'ARS',   // <- añadido
         ...(nombre ? { nombre } : {})
       };
 
