@@ -123,28 +123,22 @@
       const nombre = (document.querySelector('#nombre')?.value || '').trim();
       const eid = getOrCreateSessionEID(); // MISMO event_id para toda la sesión
 
-      // 1) Pixel
-      try {
-        fbq('track', META_EVENT, {
-          event_id: eid,
-          value: 100,       // <- valor fijo para el evento
-          currency: 'ARS'   // <- código ISO de 3 letras
-       });
-      } catch(e) {}
+// 1) Pixel (sin value/currency)
+try {
+  fbq('track', META_EVENT, { event_id: eid });
+} catch(e) {}
 
+// 2) Backend (CAPI/Sheets) (sin value/currency)
+const payload = {
+  evento: META_EVENT,
+  url: location.href,
+  id: Math.random().toString(36).slice(2,10),
+  fbp: getCookie('_fbp'),
+  fbc: getCookie('_fbc'),
+  event_id: eid,
+  ...(nombre ? { nombre } : {})
+};
 
-      // 2) Backend (CAPI/Sheets)
-      const payload = {
-        evento: META_EVENT,
-        url: location.href,
-        id: Math.random().toString(36).slice(2,10),
-        fbp: getCookie('_fbp'),
-        fbc: getCookie('_fbc'),
-        event_id: eid,
-        value: 100,        // <- añadido
-        currency: 'ARS',   // <- añadido
-        ...(nombre ? { nombre } : {})
-      };
 
       const data = new Blob([JSON.stringify(payload)], { type: 'application/json' });
       let sent = false;
