@@ -114,31 +114,42 @@
     let LAST_CONTACT_TS = 0;
 
     function sendContact(){
-      // Doble barrera: 1) 1 envío por sesión, 2) throttle
       if (alreadySentThisSession()) return false;
       const now = Date.now();
       if ((now - LAST_CONTACT_TS) < 15000) return false;
       LAST_CONTACT_TS = now;
 
       const nombre = (document.querySelector('#nombre')?.value || '').trim();
-      const eid = getOrCreateSessionEID(); // MISMO event_id para toda la sesión
+      const montoRaw = (document.querySelector('#monto')?.value || '').trim();
+      const monto = Number(montoRaw.replace(/\./g,'').replace(',','.'));
+      
+      const eid = getOrCreateSessionEID();
 
-// 1) Pixel (sin value/currency)
-try {
-  fbq('track', META_EVENT, { event_id: eid });
-} catch(e) {}
+      // 1) Pixel con value/currency
+      const fbParams = { event_id: eid };
+      if (!isNaN(monto) && monto > 0) {
+        fbParams.value = monto;
+        fbParams.currency = 'ARS';
+      } else {
+        fbParams.value = 500;
+        fbParams.currency = 'ARS';
+      }
+      try {
+        fbq('track', META_EVENT, fbParams);
+      } catch(e) {}
 
-// 2) Backend (CAPI/Sheets) (sin value/currency)
-const payload = {
-  evento: META_EVENT,
-  url: location.href,
-  id: Math.random().toString(36).slice(2,10),
-  fbp: getCookie('_fbp'),
-  fbc: getCookie('_fbc'),
-  event_id: eid,
-  ...(nombre ? { nombre } : {})
-};
-
+      // 2) Backend (CAPI/Sheets) con value/currency
+      const payload = {
+        evento: META_EVENT,
+        url: location.href,
+        id: Math.random().toString(36).slice(2,10),
+        fbp: getCookie('_fbp'),
+        fbc: getCookie('_fbc'),
+        event_id: eid,
+        ...(nombre ? { nombre } : {}),
+        value: (!isNaN(monto) && monto > 0) ? monto : 500,
+        currency: 'ARS'
+      };
 
       const data = new Blob([JSON.stringify(payload)], { type: 'application/json' });
       let sent = false;
@@ -157,17 +168,14 @@ const payload = {
         } catch(e) {}
       }
 
-      // 3) Marcar enviado en esta sesión para dedupe fuerte
       markSent();
 
-      // 4) Deshabilitar CTAs visibles (por si a futuro agregás otro)
       document.querySelectorAll('.js-cta').forEach(el => {
         el.setAttribute('aria-disabled','true');
         el.style.pointerEvents = 'none';
         el.style.opacity = '.7';
       });
 
-      // 5) Redirección a WhatsApp
       const msg = encodeURIComponent(
         nombre ? `Hola, soy ${nombre}. Quiero mi bono de bienvenida del 35%`
                : 'Quiero mi bono de bienvenida del 35%'
@@ -179,7 +187,6 @@ const payload = {
       return true;
     }
 
-    // Binder: cualquier botón con .js-cta dispara el flujo (acá tenemos 1)
     function bindCTAs(){
       document.querySelectorAll('.js-cta').forEach(el => {
         el.addEventListener('click', (e) => {
@@ -217,7 +224,6 @@ const payload = {
         </div>
       </div>
 
-      <!-- Barra fija: ÚNICO BOTÓN DE CONTACTO -->
       <div class="sticky" role="region" aria-label="Acción principal">
         <div>Desde <strong>$500</strong> • Bono <strong>+35%</strong> 1ra carga</div>
         <a class="btn js-cta" href="#">🚀 Pedir carga por WhatsApp</a>
