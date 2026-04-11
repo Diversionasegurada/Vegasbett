@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VegasBett - ¡DUPLICAMOS tu carga! Bono 100%</title>
+  <title>VegasBett - Experiencia Premium</title>
   
   <script>
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -16,79 +16,147 @@
 
   <style>
     :root {
-      --violet-900: #0f001a; --violet-700: #1a0133; --violet-500: #5b0ea5;
-      --gold: #FFD700; --gold-dark: #ccac00; --text: #ffffff; --ok: #25D366;
+      /* Nueva paleta Azul Noche y Oro Premium */
+      --bg-dark: #05080a; 
+      --bg-card: #0d1621; 
+      --accent-blue: #1a2a3d;
+      --gold: #d4af37; 
+      --gold-light: #f1d592;
+      --text: #ffffff; 
+      --ok: #25D366;
     }
-    * { box-sizing: border-box; }
+    
+    * { box-sizing: border-box; outline: none; }
+    
     body {
-      margin: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: var(--violet-900); color: var(--text);
+      margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: var(--bg-dark); color: var(--text);
       display: flex; flex-direction: column; align-items: center;
+      background-image: radial-gradient(circle at top, #101a26 0%, #05080a 70%);
     }
-    .main-container { max-width: 500px; width: 100%; padding: 20px; text-align: center; }
+
+    .main-container { max-width: 450px; width: 100%; padding: 25px; text-align: center; }
     
-    /* Header & Branding */
-    .brand-header { margin-top: 20px; margin-bottom: 30px; }
-    .logo { width: 90px; filter: drop-shadow(0 0 15px rgba(255,215,0,0.3)); }
+    .brand-header { margin-top: 10px; margin-bottom: 25px; }
+    .logo { width: 100px; filter: drop-shadow(0 0 10px rgba(212,175,55,0.2)); }
     
-    /* Hero Card Pro */
     .hero-card {
-      background: linear-gradient(180deg, var(--violet-700) 0%, var(--violet-900) 100%);
-      border: 2px solid rgba(255,215,0,0.2); border-radius: 30px;
-      padding: 40px 20px; position: relative; overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      background: var(--bg-card);
+      border: 1px solid rgba(212,175,55,0.3); 
+      border-radius: 20px;
+      padding: 45px 25px; 
+      position: relative; 
+      overflow: hidden;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.8);
     }
+
     .urgent-tag {
       position: absolute; top: 15px; right: -35px; transform: rotate(25deg);
-      background: #ff0000; color: white; padding: 5px 40px;
-      font-weight: 900; font-size: 12px; letter-spacing: 1px;
+      background: #b30000; color: white; padding: 5px 40px;
+      font-weight: 800; font-size: 11px; letter-spacing: 1px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
-    .main-title { font-size: 22px; margin-bottom: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
-    .offer-value { font-size: 70px; font-weight: 900; line-height: 1; margin: 10px 0; text-shadow: 0 0 25px rgba(255,215,0,0.5); }
-    .offer-sub { font-size: 18px; opacity: 0.9; margin-bottom: 30px; }
+    .main-title { 
+        font-size: 18px; 
+        margin-bottom: 5px; 
+        color: var(--gold-light); 
+        text-transform: uppercase; 
+        letter-spacing: 2px;
+        font-weight: 300;
+    }
+
+    .offer-value { 
+        font-size: 65px; 
+        font-weight: 900; 
+        line-height: 0.9; 
+        margin: 15px 0; 
+        color: var(--gold);
+        text-shadow: 0 0 20px rgba(212,175,55,0.4); 
+    }
+
+    .offer-sub { font-size: 16px; opacity: 0.85; margin-bottom: 25px; font-weight: 400; }
+    .offer-sub b { color: var(--gold-light); }
     
-    /* CTA Button - Pulse Effect */
     .cta-btn {
-      display: block; background: var(--ok); color: #000;
-      text-decoration: none; padding: 22px; border-radius: 18px;
-      font-size: 22px; font-weight: 900; letter-spacing: 0.5px;
-      box-shadow: 0 8px 20px rgba(37,211,102,0.4);
-      animation: pulse 2s infinite; transition: 0.3s;
+      display: block; 
+      background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); 
+      color: #fff;
+      text-decoration: none; 
+      padding: 22px; 
+      border-radius: 12px;
+      font-size: 20px; 
+      font-weight: 800; 
+      letter-spacing: 1px;
+      box-shadow: 0 10px 25px rgba(37,211,102,0.3);
+      animation: pulse 2.5s infinite; 
+      transition: 0.4s ease;
+      text-transform: uppercase;
     }
+
     @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-      100% { transform: scale(1); }
+      0% { transform: scale(1); box-shadow: 0 10px 25px rgba(37,211,102,0.3); }
+      50% { transform: scale(1.04); box-shadow: 0 15px 35px rgba(37,211,102,0.5); }
+      100% { transform: scale(1); box-shadow: 0 10px 25px rgba(37,211,102,0.3); }
     }
 
-    /* Benefits List */
-    .benefits { margin: 30px 0; padding: 0; list-style: none; text-align: left; }
-    .benefits li { margin-bottom: 15px; font-size: 16px; display: flex; align-items: center; gap: 10px; }
-    .benefits li::before { content: '✔'; color: var(--ok); font-weight: bold; background: rgba(37,211,102,0.1); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+    .benefits { 
+        margin: 35px 0 15px; 
+        padding: 0; 
+        list-style: none; 
+        text-align: left; 
+    }
+    .benefits li { 
+        margin-bottom: 18px; 
+        font-size: 15px; 
+        display: flex; 
+        align-items: center; 
+        gap: 12px; 
+        color: rgba(255,255,255,0.9);
+    }
+    .benefits li::before { 
+        content: '✓'; 
+        color: var(--gold); 
+        font-weight: bold; 
+        border: 1px solid var(--gold); 
+        border-radius: 50%; 
+        width: 22px; height: 22px; 
+        display: flex; align-items: center; justify-content: center; 
+        font-size: 12px;
+        flex-shrink: 0;
+    }
 
-    /* Trust Signals */
-    .payments-footer { margin-top: 20px; opacity: 0.7; font-size: 12px; }
-    .payment-icons { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
-    .payment-icons img { height: 25px; filter: grayscale(1) invert(1); }
+    .payments-footer { 
+        margin-top: 30px; 
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        opacity: 0.8; 
+        font-size: 11px; 
+        letter-spacing: 1px;
+    }
+    .payment-icons { 
+        display: flex; 
+        justify-content: center; 
+        gap: 10px; 
+        margin-top: 15px; 
+        font-weight: 700;
+        color: var(--gold-light);
+    }
 
-    /* Footer Fix */
-    footer { margin: 40px 0 100px; font-size: 11px; opacity: 0.5; }
+    footer { margin: 40px 0 80px; font-size: 10px; opacity: 0.4; line-height: 1.6; }
   </style>
 
   <script>
     function sendConversion() {
-      // Registrar evento en el Pixel para optimizar anuncios de Meta
       try {
         fbq('track', 'Contact', {
-          content_name: 'Bono 100%',
-          value: 1500, // Valor de conversión sugerido
+          content_name: 'Bono Premium 100%',
+          value: 2000, 
           currency: 'ARS'
         });
       } catch(e) {}
 
-      // Redirigir al WhatsApp con mensaje personalizado
-      const whatsappMsg = encodeURIComponent("¡Hola! Vengo de la web y quiero mi BONO DEL 100% para empezar ahora 🚀");
+      const whatsappMsg = encodeURIComponent("¡Hola! Quiero acceder a la Mesa Principal y activar mi BONO PREMIUM del 100% 🚀");
       setTimeout(() => {
         window.location.href = `https://wa.me/5492236914775?text=${whatsappMsg}`;
       }, 250);
@@ -105,32 +173,32 @@
     </div>
 
     <div class="hero-card">
-      <div class="urgent-tag">SOLO HOY</div>
-      <div class="main-title">"Beneficio exclusivo para nuevos ingresos: Duplicamos tu saldo inicial."</div>
-      <div class="offer-value">100%<span style="font-size: 30px; vertical-align: top;">BONO</span></div>
-      <div class="offer-sub">Cargás <b>$1.000</b> y jugás con <b>$2.000</b></div>
-      <div class="offer-sub">Cargás <b>$5.000</b> y jugás con <b>$10.000</b></div>
+      <div class="urgent-tag">PROMO VIP</div>
+      <div class="main-title">Bienvenido a la Mesa Principal</div>
+      <div class="offer-value">100%<span style="font-size: 24px; vertical-align: middle; margin-left: 10px;">BONO</span></div>
       
-      <a href="#" class="cta-btn" onclick="return sendConversion()">🚀 PEDIR BONO AHORA</a>
+      <div class="offer-sub">Duplicamos tu primer ingreso de forma inmediata.</div>
+      
+      <a href="#" class="cta-btn" onclick="return sendConversion()">🚀 ACTIVAR BONO VIP</a>
       
       <ul class="benefits">
-        <li>Cargas desde <b>$1.000</b></li>
-        <li>Acreditación al instante vía WhatsApp</li>
-        <li>Retiros rápidos sin comisiones - ni horarios - ni cronogramas</li>
-        <li>Atención personalizada 24/7</li>
+        <li>Cargas inmediatas desde <b>$1.000</b></li>
+        <li>Plataforma exclusiva <b>ganamosnet.club</b></li>
+        <li>Retiros en el acto (Sin límites de horario - Ni Cronogramas)</li>
+        <li>Soporte personalizado 24/7 - con dos Lineas activas</li>
       </ul>
     </div>
 
     <div class="payments-footer">
-      <span>CARGAS CON TODAS LAS BILLETERAS</span>
+      <span>MÉTODOS DE CARGA HABILITADOS</span>
       <div class="payment-icons">
-        <span>MercadoPago</span> • <span>Cuenta DNI</span> • <span>Ualá</span> • <span>Transferencia</span>
+        <span>MERCADOPAGO</span> • <span>TRANSFERENCIA</span> • <span>UALA</span>• <span>CUENTA DNI</span>• <span>BN</span>
       </div>
     </div>
 
     <footer>
-      <p>ESTE SITIO ES OPERADO BAJO LA PLATAFORMA GANAMOS.IO</p>
-      <p>© 2026 VegasBett – JUEGO RESPONSABLE (+18)</p>
+      <p>EXCLUSIVO PARA MAYORES DE 18 AÑOS</p>
+      <p>© 2026 VegasBett – JUEGA CON RESPONSABILIDAD</p>
     </footer>
   </div>
 
