@@ -16,7 +16,7 @@
 
   <style>
     :root {
-      /* Nueva paleta Azul Noche y Oro Premium */
+      /* Paleta Azul Noche y Oro Premium */
       --bg-dark: #05080a; 
       --bg-card: #0d1621; 
       --accent-blue: #1a2a3d;
@@ -33,12 +33,13 @@
       background: var(--bg-dark); color: var(--text);
       display: flex; flex-direction: column; align-items: center;
       background-image: radial-gradient(circle at top, #101a26 0%, #05080a 70%);
+      min-height: 100vh;
     }
 
     .main-container { max-width: 450px; width: 100%; padding: 25px; text-align: center; }
     
     .brand-header { margin-top: 10px; margin-bottom: 25px; }
-    .logo { width: 100px; filter: drop-shadow(0 0 10px rgba(212,175,55,0.2)); }
+    .logo { width: 120px; filter: drop-shadow(0 0 10px rgba(212,175,55,0.2)); }
     
     .hero-card {
       background: var(--bg-card);
@@ -85,9 +86,9 @@
       text-decoration: none; 
       padding: 22px; 
       border-radius: 12px;
-      font-size: 20px; 
+      font-size: 18px; 
       font-weight: 800; 
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       box-shadow: 0 10px 25px rgba(37,211,102,0.3);
       animation: pulse 2.5s infinite; 
       transition: 0.4s ease;
@@ -137,6 +138,7 @@
     .payment-icons { 
         display: flex; 
         justify-content: center; 
+        flex-wrap: wrap;
         gap: 10px; 
         margin-top: 15px; 
         font-weight: 700;
@@ -148,18 +150,24 @@
 
   <script>
     function sendConversion() {
+      // 1. Disparamos el evento de contacto en el Pixel
       try {
         fbq('track', 'Contact', {
           content_name: 'Bono Premium 100%',
           value: 2000, 
           currency: 'ARS'
         });
-      } catch(e) {}
+      } catch(e) { console.log('Pixel no detectado'); }
 
+      // 2. Preparamos el mensaje
       const whatsappMsg = encodeURIComponent("¡Hola! Quiero activar mi BONO PREMIUM del 100% 🚀");
+      
+      // 3. Esperamos 450ms para asegurar que el Pixel se envíe antes de salir de la página
       setTimeout(() => {
-        window.location.href = `https://wa.me/5492234225672?text=${whatsappMsg}`;
-      }, 250);
+        // Usamos api.whatsapp para máxima compatibilidad en móviles
+        window.location.href = "https://api.whatsapp.com/send?phone=5492234225672&text=" + whatsappMsg;
+      }, 450); 
+      
       return false;
     }
   </script>
@@ -179,20 +187,20 @@
       
       <div class="offer-sub">Duplicamos tu primer ingreso de forma inmediata.</div>
       
-      <a href="#" class="cta-btn" onclick="return sendConversion()">🚀 ACTIVAR BONO VIP</a>
+      <a href="#" class="cta-btn" onclick="return sendConversion()">🚀 RECLAMAR BONO POR WHATSAPP</a>
       
       <ul class="benefits">
         <li>Cargas inmediatas desde <b>$1.000</b></li>
         <li>Plataforma exclusiva <b>ganamosnet.club</b></li>
-        <li>Retiros en el acto (Sin límites de horario - Ni Cronogramas)</li>
-        <li>Soporte personalizado 24/7 - con dos Lineas activas</li>
+        <li>Retiros en el acto (Sin límites de horario)</li>
+        <li>Soporte personalizado 24/7</li>
       </ul>
     </div>
 
     <div class="payments-footer">
       <span>MÉTODOS DE CARGA HABILITADOS</span>
       <div class="payment-icons">
-        <span>MERCADOPAGO</span> • <span>TRANSFERENCIA</span> • <span>UALA</span>• <span>CUENTA DNI</span>• <span>BN</span>
+        <span>MERCADOPAGO</span> • <span>TRANSFERENCIA</span> • <span>UALA</span> • <span>CUENTA DNI</span>
       </div>
     </div>
 
