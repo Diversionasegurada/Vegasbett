@@ -150,7 +150,7 @@
 
   <script>
     function sendConversion() {
-      // 1. Disparamos el evento de contacto en el Pixel
+      // 1. Seguimiento del Pixel
       try {
         fbq('track', 'Contact', {
           content_name: 'Bono Premium 100%',
@@ -159,13 +159,25 @@
         });
       } catch(e) { console.log('Pixel no detectado'); }
 
-      // 2. Preparamos el mensaje
+      // 2. Lógica de horarios para rotación de número
+      const ahora = new Date();
+      const horaActual = ahora.getHours();
+      let nroWhatsApp;
+
+      // De 08:00 a 19:59 (antes de las 20hs)
+      if (horaActual >= 8 && horaActual < 20) {
+        nroWhatsApp = "5492234225672";
+      } else {
+        // De 20:00 a 07:59
+        nroWhatsApp = "5492235393540";
+      }
+
+      // 3. Preparamos el mensaje
       const whatsappMsg = encodeURIComponent("¡Hola! Quiero activar mi BONO PREMIUM del 100% 🚀");
       
-      // 3. Esperamos 450ms para asegurar que el Pixel se envíe antes de salir de la página
+      // 4. Redirección con delay para asegurar el Pixel
       setTimeout(() => {
-        // Usamos api.whatsapp para máxima compatibilidad en móviles
-        window.location.href = "https://api.whatsapp.com/send?phone=5492234225672&text=" + whatsappMsg;
+        window.location.href = "https://api.whatsapp.com/send?phone=" + nroWhatsApp + "&text=" + whatsappMsg;
       }, 450); 
       
       return false;
